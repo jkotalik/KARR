@@ -1,0 +1,19 @@
+﻿<Project>
+  <Import
+    Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), AspNetCoreSettings.props))\AspNetCoreSettings.props"
+    Condition=" '$(CI)' != 'true' AND '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), AspNetCoreSettings.props))' != '' " />
+
+  <PropertyGroup>
+    <Product>Hackathon project</Product>
+    <RepositoryUrl>https://github.com/jkotalik/KARR</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build\Key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblySigningCertName>Microsoft</AssemblySigningCertName>
+    <PackageSigningCertName>MicrosoftNuGet</PackageSigningCertName>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

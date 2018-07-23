@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <RuntimeFrameworkVersion>2.2.0-preview1-26618-02</RuntimeFrameworkVersion>
+    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
+  </PropertyGroup>
+</Project>
