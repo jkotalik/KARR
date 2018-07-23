@@ -25,7 +25,8 @@ namespace Karr.Samples
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddRouting();
+            services.AddKarr();
             services.Configure<EndpointOptions>(options =>
             {
                 options.DataSources.Add(new DefaultEndpointDataSource(new[]
@@ -53,7 +54,7 @@ namespace Karr.Samples
                                 throw new ArgumentNullException(nameof(httpContext));
                             }
 
-                            var uri = new Uri("https://example.com/");
+                            var uri = new Uri("http://localhost:80/");
 
                             return httpContext.ProxyRequest(uri);
                         },
@@ -70,7 +71,7 @@ namespace Karr.Samples
         public void Configure(IApplicationBuilder app)
         {
             app.UseGlobalRouting();
-            //app.UseWebSockets().UseKarr();
+            app.UseWebSockets().UseKarr();
             app.UseEndpoint();
         }
     }
