@@ -11,23 +11,25 @@ namespace Karr.Core
 {
     public static class KarrExtensions
     {
-        public static void UseKarr(this IApplicationBuilder app)
+        private const string GlobalRoutingRegisteredKey = "__GlobalRoutingMiddlewareRegistered";
+
+        public static IApplicationBuilder UseKarr(this IApplicationBuilder builder)
         {
-            app.UseGlobalRouting();
-            app.UseEndpoint();
+            builder.UseGlobalRouting();
+            builder.UseWebSockets();
+            // Idea #1 to implement this
+            // call app.UseProxyEndpoint() and create custom endpoints which proxies the request
+            return builder.UseProxyEndpoint("http://example.com");
         }
 
-        public static void UseKarr(this IApplicationBuilder app, string baseUri)
+        public static IApplicationBuilder UseProxyEndpoint(this IApplicationBuilder builder, string baseUri)
         {
-            if (app == null)
+            if (!builder.Properties.TryGetValue(GlobalRoutingRegisteredKey, out _))
             {
-                throw new ArgumentNullException(nameof(app));
-            }
-            if (baseUri == null)
-            {
-                throw new ArgumentNullException(nameof(baseUri));
+                throw new InvalidOperationException("Must register GlobalRouting middleware before proxy endpoint");
             }
 
+            // TODO populate uris via endpoints
             var uri = new Uri(baseUri);
 
             var options = new KarrOptions
@@ -36,27 +38,7 @@ namespace Karr.Core
                 Host = new HostString(uri.Authority)
             };
 
-            app.UseMiddleware<KarrMiddleware>(Options.Create(options));
-        }
-
-        public static void UseKarr(this IApplicationBuilder app, Uri baseUri)
-        {
-            if (app == null)
-            {
-                throw new ArgumentNullException(nameof(app));
-            }
-            if (baseUri == null)
-            {
-                throw new ArgumentNullException(nameof(baseUri));
-            }
-
-            var options = new KarrOptions
-            {
-                Scheme = baseUri.Scheme,
-                Host = new HostString(baseUri.Authority)
-            };
-
-            app.UseMiddleware<KarrMiddleware>(Options.Create(options));
+            return builder.UseMiddleware<KarrMiddleware>(Options.Create(options));
         }
 
         public static async Task ProxyRequest(this HttpContext context, Uri destinationUri)

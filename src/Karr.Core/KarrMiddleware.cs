@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 
 namespace Karr.Core
@@ -38,9 +39,10 @@ namespace Karr.Core
 
         public Task Invoke(HttpContext context)
         {
-            if (context == null)
+            var feature = context.Features.Get<IEndpointFeature>();
+            if (feature == null)
             {
-                throw new ArgumentNullException(nameof(context));
+                throw new InvalidOperationException("GlobalRoutingMiddleware wasn't run.");
             }
 
             // Generate URL, other middleware have already been executed.

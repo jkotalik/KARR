@@ -33,7 +33,7 @@ namespace Karr.Samples
                 {
                      new MatcherEndpoint((next) => (httpContext) =>
                         {
-                             if (httpContext == null)
+                            if (httpContext == null)
                             {
                                 throw new ArgumentNullException(nameof(httpContext));
                             }
@@ -58,7 +58,7 @@ namespace Karr.Samples
 
                             return httpContext.ProxyRequest(uri);
                         },
-                        RoutePatternFactory.Parse("/https"),
+                        RoutePatternFactory.Parse("/localhost"),
                         new RouteValueDictionary(),
                         0,
                         EndpointMetadataCollection.Empty,
@@ -70,9 +70,7 @@ namespace Karr.Samples
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseGlobalRouting();
-            app.UseWebSockets().UseKarr();
-            app.UseEndpoint();
+            app.UseKarr();
         }
     }
 }
