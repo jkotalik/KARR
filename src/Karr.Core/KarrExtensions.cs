@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Karr.Core
 {
     public static class KarrExtensions
     {
+        public static void UseKarr(this IApplicationBuilder app)
+        {
+            app.UseGlobalRouting();
+            app.UseEndpoint();
+        }
+
         public static void UseKarr(this IApplicationBuilder app, string baseUri)
         {
             if (app == null)
@@ -29,8 +36,9 @@ namespace Karr.Core
                 Host = new HostString(uri.Authority)
             };
 
-            app.UseMiddleware<KarrMiddleware>(options);
+            app.UseMiddleware<KarrMiddleware>(Options.Create(options));
         }
+
         public static void UseKarr(this IApplicationBuilder app, Uri baseUri)
         {
             if (app == null)
@@ -48,8 +56,9 @@ namespace Karr.Core
                 Host = new HostString(baseUri.Authority)
             };
 
-            app.UseMiddleware<KarrMiddleware>(options);
+            app.UseMiddleware<KarrMiddleware>(Options.Create(options));
         }
+
         public static async Task ProxyRequest(this HttpContext context, Uri destinationUri)
         {
             if (context == null)

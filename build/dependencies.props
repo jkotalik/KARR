@@ -23,6 +23,7 @@
     <MicrosoftExtensionsBuffersMemoryPoolSourcesPackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsBuffersMemoryPoolSourcesPackageVersion>
     <MicrosoftExtensionsCommandLineUtilsSourcesPackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsCommandLineUtilsSourcesPackageVersion>
     <MicrosoftExtensionsConfigurationEnvironmentVariablesPackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsConfigurationEnvironmentVariablesPackageVersion>
+    <MicrosoftAspNetCoreRoutingPackageVersion>2.2.0-preview1-34759</MicrosoftAspNetCoreRoutingPackageVersion>
     <MicrosoftExtensionsConfigurationJsonPackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsConfigurationJsonPackageVersion>
     <MicrosoftExtensionsLoggingAbstractionsPackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsLoggingAbstractionsPackageVersion>
     <MicrosoftExtensionsLoggingConsolePackageVersion>2.2.0-preview1-34762</MicrosoftExtensionsLoggingConsolePackageVersion>

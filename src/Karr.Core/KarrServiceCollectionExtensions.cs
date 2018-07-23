@@ -13,6 +13,8 @@ namespace Karr.Core
             {
                 throw new ArgumentNullException(nameof(services));
             }
+            services.AddHttpClient();
+
             return services.AddSingleton<KarrService>();
         }
     }
