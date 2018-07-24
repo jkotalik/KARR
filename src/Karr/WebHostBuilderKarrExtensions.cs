@@ -6,7 +6,7 @@ namespace Karr
 {
     public static class WebHostBuilderKarrExtensions
     {
-        public static IWebHostBuilder UseEndpoint(this IWebHostBuilder hostBuilder)
+        public static IWebHostBuilder UseKarr(this IWebHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureServices(services =>
             {

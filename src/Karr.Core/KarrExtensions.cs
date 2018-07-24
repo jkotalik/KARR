@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -18,26 +19,7 @@ namespace Karr.Core
             // add type
             var dataSourceBuilder = builder.ApplicationServices.GetRequiredService<IEndpointDataSourceBuilder>();
             action(dataSourceBuilder);
-            builder.UseEndpoint();
-        }
-
-        public static IApplicationBuilder UseProxyEndpoint(this IApplicationBuilder builder, string baseUri)
-        {
-            if (!builder.Properties.TryGetValue(GlobalRoutingRegisteredKey, out _))
-            {
-                throw new InvalidOperationException("Must register GlobalRouting middleware before proxy endpoint");
-            }
-
-            // TODO populate uris via endpoints
-            var uri = new Uri(baseUri);
-
-            var options = new KarrOptions
-            {
-                Scheme = uri.Scheme,
-                Host = new HostString(uri.Authority)
-            };
-
-            return builder.UseMiddleware<KarrMiddleware>(Options.Create(options));
+            return builder.UseEndpoint();
         }
 
         public static async Task ProxyRequest(this HttpContext context, Uri destinationUri)
@@ -46,6 +28,7 @@ namespace Karr.Core
             {
                 throw new ArgumentNullException(nameof(context));
             }
+
             if (destinationUri == null)
             {
                 throw new ArgumentNullException(nameof(destinationUri));
@@ -69,20 +52,11 @@ namespace Karr.Core
 
                     using (var responseMessage = await context.SendProxyHttpRequest(requestMessage))
                     {
+                        // TODO make this happen at the end of the response.
                         await context.CopyProxyHttpResponse(responseMessage);
                     }
                 }
             }
         }
-    }
-
-    public interface IEndpointDataSourceBuilder
-    {
-        IList<Endpoint> Endpoints { get; }
-    }
-
-    public class DefaultEndpointDataSourceBuilder : IEndpointDataSourceBuilder
-    {
-        public IList<Endpoint> Endpoints { get; } = new List<Endpoint>();
     }
 }

@@ -25,47 +25,31 @@ namespace Karr.Samples
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Set application configuration
             services.AddRouting();
-            services.AddKarr();
+            services.AddKarr(); // TODO this may just be calling AddProxy
+
             services.Configure<EndpointOptions>(options =>
             {
-                options.DataSources.Add(new DefaultEndpointDataSource(new[]
+                options.DataSources.Add(new DefaultEndpointDataSource(new Endpoint[]
                 {
-                     new MatcherEndpoint((next) => (httpContext) =>
-                        {
-                            if (httpContext == null)
-                            {
-                                throw new ArgumentNullException(nameof(httpContext));
-                            }
-
-                            var uri = new Uri("http://example.com");
-
-                            return httpContext.ProxyRequest(uri);
-                        },
-                        RoutePatternFactory.Parse("/"),
-                        new RouteValueDictionary(),
-                        0,
-                        new EndpointMetadataCollection(new[]
-                        {
-                            new AuthPolicy() // 
-                        }),
-                        "Home"),
-                    new MatcherEndpoint((next) => (httpContext) =>
-                        {
-                            if (httpContext == null)
-                            {
-                                throw new ArgumentNullException(nameof(httpContext));
-                            }
-
-                            var uri = new Uri("http://localhost:80/");
-
-                            return httpContext.ProxyRequest(uri);
-                        },
-                        RoutePatternFactory.Parse("/localhost"),
+                    new ProxyEndpoint(
+                        RoutePatternFactory.Parse("/foo"),
                         new RouteValueDictionary(),
                         0,
                         EndpointMetadataCollection.Empty,
-                        "Home")
+                        "ProxyEndpoint via data sources",
+                        new Uri("http://example.com")),
+                    new MatcherEndpoint(
+                        (next) => (httpContext) => {
+                            httpContext.Response.Headers["FinalHeader"] = "what";
+                            return httpContext.ProxyRequest(new Uri("http://example.com"));
+                        },
+                        RoutePatternFactory.Parse("/bar"),
+                        new RouteValueDictionary(),
+                        0,
+                        EndpointMetadataCollection.Empty,
+                        "Matcher endpoint with proxy.")
                 }));
             });
         }
@@ -75,7 +59,14 @@ namespace Karr.Samples
         {
             app.UseGlobalRouting();
             app.UseEndpoint(builder => {
-                builder.AddProxyEndpoint("/foo", "http://example.com").AddAuthPolicy("A sled gang");
+                builder.AddProxyEndpoint(
+                    RoutePatternFactory.Parse("/"),
+                    new RouteValueDictionary(),
+                    0,
+                    EndpointMetadataCollection.Empty,
+                    "ProxyEndpoint via Builder",
+                    new Uri("http://example.com"));/*AddAuthPolicy("A sled gang")*/ 
+                // TODO make AddProxyEndpoint return a builder to add policies onto
             });
         }
     }
