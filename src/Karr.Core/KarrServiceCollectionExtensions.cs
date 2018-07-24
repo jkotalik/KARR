@@ -7,7 +7,7 @@ namespace Karr.Core
 {
     public static class KarrServiceCollectionExtensions
     {
-        public static IServiceCollection AddKarr(this IServiceCollection services)
+        public static IKarrBuilder AddKarr(this IServiceCollection services)
         {
             if (services == null)
             {

@@ -13,13 +13,12 @@ namespace Karr.Core
     {
         private const string GlobalRoutingRegisteredKey = "__GlobalRoutingMiddlewareRegistered";
 
-        public static IApplicationBuilder UseKarr(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseEndpoint(this IApplicationBuilder builder, Action<IEndpointDataSourceBuilder> action)
         {
-            builder.UseGlobalRouting();
-            builder.UseWebSockets();
-            // Idea #1 to implement this
-            // call app.UseProxyEndpoint() and create custom endpoints which proxies the request
-            return builder.UseProxyEndpoint("http://example.com");
+            // add type
+            var dataSourceBuilder = builder.ApplicationServices.GetRequiredService<IEndpointDataSourceBuilder>();
+            action(dataSourceBuilder);
+            builder.UseEndpoint();
         }
 
         public static IApplicationBuilder UseProxyEndpoint(this IApplicationBuilder builder, string baseUri)
@@ -75,5 +74,15 @@ namespace Karr.Core
                 }
             }
         }
+    }
+
+    public interface IEndpointDataSourceBuilder
+    {
+        IList<Endpoint> Endpoints { get; }
+    }
+
+    public class DefaultEndpointDataSourceBuilder : IEndpointDataSourceBuilder
+    {
+        public IList<Endpoint> Endpoints { get; } = new List<Endpoint>();
     }
 }

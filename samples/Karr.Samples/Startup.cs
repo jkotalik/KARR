@@ -45,7 +45,10 @@ namespace Karr.Samples
                         RoutePatternFactory.Parse("/"),
                         new RouteValueDictionary(),
                         0,
-                        EndpointMetadataCollection.Empty,
+                        new EndpointMetadataCollection(new[]
+                        {
+                            new AuthPolicy() // 
+                        }),
                         "Home"),
                     new MatcherEndpoint((next) => (httpContext) =>
                         {
@@ -70,7 +73,10 @@ namespace Karr.Samples
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseKarr();
+            app.UseGlobalRouting();
+            app.UseEndpoint(builder => {
+                builder.AddProxyEndpoint("/foo", "http://example.com").AddAuthPolicy("A sled gang");
+            });
         }
     }
 }
