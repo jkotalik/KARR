@@ -22,6 +22,8 @@ namespace Karr.Core
             return builder.UseEndpoint();
         }
 
+        public static IApplicationBuilder UseEndpointWhen();
+
         public static async Task ProxyRequest(this HttpContext context, Uri destinationUri)
         {
             if (context == null)
