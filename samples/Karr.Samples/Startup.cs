@@ -68,6 +68,8 @@ namespace Karr.Samples
                     new Uri("http://example.com"));/*AddAuthPolicy("A sled gang")*/ 
                 // TODO make AddProxyEndpoint return a builder to add policies onto
             });
+
+            app.UseEndpointWhen
         }
     }
 }
